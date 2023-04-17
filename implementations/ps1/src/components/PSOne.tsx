@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { PixelStreamingWrapper } from './PixelStreamingWrapper';
 
-export const App = () => {
-    const [remoteURl] = useState("ws://65.1.154.156/");
+
+export const PSOne = () => {
+    const [remoteURl] = useState("ws://65.1.154.156");
     return (
         <div
             style={{
@@ -20,7 +21,6 @@ export const App = () => {
                     StartVideoMuted: true,
                     HoveringMouse: true,
                     MatchViewportRes:true
-
                 }}
             />
         </div>

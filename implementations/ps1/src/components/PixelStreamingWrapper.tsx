@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import {
     Config,
     AllSettings,
@@ -8,7 +9,6 @@ import {
     
 } from '@epicgames-ps/lib-pixelstreamingfrontend-ue5.2';
 
-import { io } from "socket.io-client";
 
 export interface PixelStreamingWrapperProps {
     initialSettings?: Partial<AllSettings>;
@@ -25,6 +25,8 @@ export const PixelStreamingWrapper = ({
     
     // A boolean state variable that determines if the Click to play overlay is shown:
     const [clickToPlayVisible, setClickToPlayVisible] = useState(false);
+
+    const navigate = useNavigate();
 
     // Run on component mount:
     useEffect(() => {
@@ -45,12 +47,30 @@ export const PixelStreamingWrapper = ({
             // Save the library instance into component state so that it can be accessed later:
             setPixelStreaming(streaming);
 
-            var socket = io("http://15.206.5.15:3001/");
             const deepLink = (response: string) => {
+               
                 if( response.toString() !== "IsMobile"){
-                    socket.emit('sendURL', response);
+
+                    const psURL = JSON.parse(response)
+                    streaming.emitUIInteraction("pc_input_enable");
+                    console.log(psURL.appId)
+                    if(psURL.appId == 'Red'){
+                        navigate("ps1");
+                    }else{
+                        navigate("/"); 
+                    }
+                    
+                }else{
+                    console.log(response);
+                    streaming.emitUIInteraction("mobile_input_enable");
                 }
+
+                
             }
+
+            
+
+            
             
             streaming.addResponseEventListener("handle_responses", deepLink)
 
